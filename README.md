@@ -1,2 +1,6 @@
-# Simhastha360
-Project simhastha360. 
+# Simhastha360: Intelligent Pilgrim Companion
+This repo contains:
+- Flutter app (app/)
+- AI models (ai_models/)
+- Firebase setup (firebase/)
+- Documentation (docs/)
