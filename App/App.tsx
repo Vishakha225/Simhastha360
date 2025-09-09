@@ -79,9 +79,12 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-blue-50">
-      <div className="max-w-md mx-auto bg-white min-h-screen shadow-xl relative">
-        {renderScreen()}
+    // <div className="min-h-screen bg-gradient-to-br from-orange-50 to-blue-50">
+    //   <div className="max-w-md mx-auto min-h-screen shadow-xl relative">
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-blue-50 flex items-center justify-center">
+        <div className="w-full max-w-3xl p-6 rounded-xl shadow-lg bg-white/30">
+      
+          {renderScreen()}
         
         {/* Floating Chat Button - Hide on welcome screen */}
         <FloatingChatButton 
