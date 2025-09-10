@@ -1,4 +1,4 @@
-import SpeechRecognition as sr
+import speech_recognition as sr
 from gtts import gTTS
 import os
 import difflib
@@ -8,9 +8,12 @@ import sqlite3
 
 translator = Translator()
 
+
 DB_PATH = "simhastha_tools.db"
 
+
 WAKE_WORD = "kumbh"
+
 
 responses = {
     "hello": "Hello! How can I help you?",
@@ -34,16 +37,19 @@ languages = {
     "ml": "Malayalam"
 }
 
+
 def db_search(query):
     try:
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
 
+        
         c.execute("SELECT ghat, date, time FROM bookings WHERE ghat LIKE ?", (f"%{query}%",))
         booking = c.fetchone()
         if booking:
             return f"Booking found: Ghat {booking[0]}, Date {booking[1]}, Time {booking[2]}."
 
+       
         c.execute("SELECT name, category, description, contact FROM lost_found WHERE description LIKE ?", (f"%{query}%",))
         lost_item = c.fetchone()
         if lost_item:
@@ -54,10 +60,12 @@ def db_search(query):
         return None
     return None
 
+
 def chatbot_response(user_input, lang='en'):
     translated_input = translator.translate(user_input, dest='en').text.lower()
-    response = "Sorry, I don't understand. 🙏"
+    response = "Sorry, I don't understand."
 
+    
     closest = difflib.get_close_matches(translated_input, responses.keys(), n=1, cutoff=0.6)
     if closest:
         response = responses[closest[0]]
@@ -69,6 +77,7 @@ def chatbot_response(user_input, lang='en'):
     translated_response = translator.translate(response, dest=lang).text
     return translated_response
 
+
 def speak(text, lang='en'):
     try:
         tts = gTTS(text=text, lang=lang)
@@ -76,35 +85,37 @@ def speak(text, lang='en'):
         playsound.playsound("reply.mp3")
         os.remove("reply.mp3")
     except Exception as e:
-        print("⚠️ Speech output error:", e)
+        print("Speech output error:", e)
+
 
 recognizer = sr.Recognizer()
 mic = sr.Microphone()
 
-print("🟢 Wake Word Voice Chatbot Started!")
-print(f"👉 Say '{WAKE_WORD}' to activate me.\n")
+print("Wake Word Voice Chatbot Started!")
+print(f"Say '{WAKE_WORD}' to activate me.\n")
 print("Available languages:")
 for code, name in languages.items():
     print(f"{code} = {name}")
 
+
 lang_code = input("\nEnter your language code: ").strip()
 if lang_code not in languages:
-    print("⚠️ Invalid code, defaulting to English (en).")
+    print("Invalid code, defaulting to English (en).")
     lang_code = "en"
 
-print(f"\n🎙 Speak '{WAKE_WORD}' anytime to start talking in {languages[lang_code]}\n")
+print(f"\nSpeak '{WAKE_WORD}' anytime to start talking in {languages[lang_code]}\n")
 
 while True:
     with mic as source:
         recognizer.adjust_for_ambient_noise(source)
-        print("🎧 Waiting for wake word...")
+        print("Waiting for wake word...")
         audio = recognizer.listen(source)
 
     try:
         user_input = recognizer.recognize_google(audio, language="en-IN").lower()
 
         if WAKE_WORD in user_input:
-            print("✅ Wake word detected! Start speaking...")
+            print("Wake word detected! Start speaking...")
 
             while True:
                 with mic as source:
@@ -117,7 +128,7 @@ while True:
                     print("You said:", query)
 
                     if query.lower() in ["exit", "quit", "bye"]:
-                        bot_reply = "Goodbye! 🙏"
+                        bot_reply = "Goodbye!"
                         print("Bot:", bot_reply)
                         speak(bot_reply, lang_code)
                         raise SystemExit
@@ -127,11 +138,12 @@ while True:
                     speak(bot_reply, lang_code)
 
                 except sr.UnknownValueError:
-                    print("❌ Could not understand audio")
+                    print("Could not understand audio")
                 except sr.RequestError:
-                    print("⚠️ Speech Recognition service unavailable")
+                    print("Speech Recognition service unavailable")
 
     except sr.UnknownValueError:
         pass  
     except sr.RequestError:
-        print("⚠️ Speech Recognition service unavailable")
+        print("Speech Recognition service unavailable")
+enumerate
